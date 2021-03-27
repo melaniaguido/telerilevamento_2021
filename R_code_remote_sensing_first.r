@@ -148,8 +148,30 @@ plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
 
+#Per salvare l'immagine in PDF nella cartella di riferimento utilizzo la funzione dedicata pdf()
 
+pdf("il_mio_primo_pdf_con_R.pdf")
+par(mfrow=c(2,2))
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
+Dev.off()
 
+#Plottiamo l'immagine con lo stretch histogram
+
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist") #Otteniamo un'immagine in cui vediamo molti dettagli che prima non vedevamo 
+
+#Creiamo un par dove abbiamo l'immagine a colori naturali, colori falsati e colori falsati con lo stretch histogram 
+par(mfrow=c(3,1))
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist")
+
+#Siamo quindi partiti da un'immagine esattamente come la vedrebbe l'occhio umano,quindi con pochissima differenziazione 
+#E siamo arrivati, tramite lo stretch per istogrammi, ad un'immagine che indivdua tutti i differenti componenti all'interno della foresta 
+
+#A differenza di quando usiamo la funzione color ramp palette in cui siamo noi a scegliere i colori, usando la funzione plotRGB vediamo i colori reali 
 
 
 
