@@ -111,5 +111,46 @@ clnir<- colorRampPalette (c("red","orange","yellow"))  (100)
 plot(p224r63_2011$B4_sre, col=clnir)
 
 
+#Day 4 Visualizing data by RGB plotting
+#Richiamiamo la libreria raster e selezioniamo la nostra cartella di riferimento lab 
+
+library(raster)
+setwd("C:/lab/")
+
+#vado a richimare anche la nostra immagine 
+p224r63_2011 <- brick("p224r63_2011_masked.grd")
+
+#Bande di landsat 
+#B1: banda del blu
+#B2: banda del verde
+#B3: banda del rosso 
+#B4: infrarosso vicino (la prima lunghezza d'onda dopo il rosso)
+#B5: infrarosso medio 
+#B6: infrarosso termico 
+#B7: infrarosso medio
+
+#RGB -> abbiamo tre colori fondamentali (rosso, verde, blu) e in base a come vengono mischiati otteniamo tutti gli altri colori 
+#Posso usare solo tre bande per volta per visualizzare l'immagine, nella componente red montiamo la banda n3, nella componente green la banda n2 e nella componente blu la n1
+#La funzione che ci permette di fare ciò è la funzione plot, abbiamo un oggetto raster multi-layered(molte bande) e attraverso lo schema RGB andiamo ad utilizzarle 
+
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin") #associo ogni singola banda ad un componente dello schema RGB
+#stretch -> prendiamo i valori delle singole banda, riflettanza, e li "tiriamo" per far si che non ci sia uno schiacciamento da una parte o dall'altra del colore, quindi vediamo più colori 
+#abbiamo ottenuto un'immagine a colori nataruali 
+
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin") #L'immagine appare rossa perchè avendo montato la banda dell'infrarosso sulla componente red, tutti gli oggetti con alta riflettanza assumeranno il colore a cui è stata associata la banda n4  
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin") #Questa volta siccome abbiamo montato la banda dell'infrarosso sulla componente green, tutta la vegetazione appare verde fluorescente (viola suolo nudo) 
+plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin") # Qui vediamo il suolo nudo giallo e la vegetazione blu sempre per lo stesso motivo di sopra 
+
+#exercise mount a 2x2 multiframe 
+par(mfrow=c(2,2))
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
+
+
+
+
+
 
 
