@@ -173,6 +173,46 @@ plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="hist")
 
 #A differenza di quando usiamo la funzione color ramp palette in cui siamo noi a scegliere i colori, usando la funzione plotRGB vediamo i colori reali 
 
+#Day5
+
+library(raster)
+setwd("C:/lab/")
+p224r63_2011 <- brick("p224r63_2011_masked.grd")
+p224r63_2011
+#la funzione brick importa un intero set di dati creando un blocco di diversi raster insieme 
+#Multitemporal set 
+#Carico una nuova immagine 
+p224r63_1988 <- brick("p224r63_1988_masked.grd") #Associamo il set di dati ad un nome scelto da noi 
+#Abbiamo quindi importato un nuovo file 
+p224r63_1988 #scriviamo il nome per avere le info sul file 
+
+plot(p224r63_1988) #visualizziamo così le singole bande 
+
+#Bande di landsat 
+#B1: banda del blu
+#B2: banda del verde
+#B3: banda del rosso 
+#B4: infrarosso vicino (la prima lunghezza d'onda dopo il rosso)
+#B5: infrarosso medio 
+#B6: infrarosso termico 
+#B7: infrarosso medio
+#plotRGB associo ogni singola banda ad un componente dello schema RGB
+plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin")
+
+#plottiamo l'immagine usando l'infrarosso e lo associamo alla componente red  
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+
+#Creiamo uno schema con 2 righe ed 1 colonna inserendo l'immagine del 1988 e del 2011 
+par(mfrow=c(2,1))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+
+#Creiamo uno oscema 2x2 con stretch lineare e histogram 
+par(mfrow=c(2,2))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
 
 
 
