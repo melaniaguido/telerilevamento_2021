@@ -39,7 +39,7 @@ library(gridExtra)
 #Vado a fare il plot delle due immagine utilizzando ggRGB
 p1 <- ggRGB(defor1, r=1, g=2, b=3, stretch="lin")
 p2 <- ggRGB(defor2, r=1, g=2, b=3, stretch="lin")
-grid.arrange(p1, p2, nrow=2)
+grid.arrange(p1, p2, nrow=2) #grafici in una pagina 
 
 #Classificazione non supervisionata 
 d1c <- unsuperClass(defor1, nClasses=2)
@@ -77,8 +77,35 @@ s1 <- 34249 + 307043 #Somma di tutti i pixel
 #Qual è la frequenza dei pixel di foresta? 
 prop1 <- freq(d1c$map)/s1 #Otteniamo così le proporzioni 
 # value    count
-#[1,] 2.930042e-06 0.100351
-#[2,] 5.860085e-06 0.899649
+#[1,] 2.930042e-06 0.100351 #10% agricolo
+#[2,] 5.860085e-06 0.899649 #89.96% foresta 
+#Andiamo a fare la stessa cosa per la seconda mappa 
+s2 <- 342726
+prop2 <- freq(d2c$map)/s2
+#value     count
+#[1,] 2.917783e-06 0.5192428 #foresta 51.9%
+#[2,] 5.835565e-06 0.4807572 #agricoltura 48.07%
+
+#Andiamo a generare un dataset che in r si chiama dataframe 
+cover <- c("Forest","Agriculture") #cover è formata dalle componenti forest e agriculture
+percent_1992 <- c(89.96, 10.03) 
+percent_2006 <- c(51.92, 48.07)
+#data.frame è la funzione che mi permette di creare i dataframe in r
+percentages <- data.frame(cover, percent_1992, percent_2006) #Andiamo a definire le colonne 
+percentages
+#      cover        percent_1992 percent_2006
+#1      Forest        89.96        51.92
+#2 Agriculture        10.03        48.07
+
+#Andiamo a fare il plot 
+#La funzione ggplot e plotta un dataset e poi ha una parte chiamata aestetich, scriviamo la prima e la seconda colonna  e il colore 
+#Attraverso geom_bar vado a definire la visualizzazione 
+ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
+
+#Andiamo a fare il plot di tutte e due utilizzando ggplot 
+p1 <- ggplot(percentages, aes(x=cover, y=percent_1992, color=cover)) + geom_bar(stat="identity", fill="white")
+p2 <- ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
+grid.arrange(p1, p2, nrow=1) #Attraverso grid.arrange andiamo a mettere i due grafici vicini nello stessa pagina 
 
 
 
