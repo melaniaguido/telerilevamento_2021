@@ -74,6 +74,19 @@ plot(vi1, col=cl)
 vi2 <- spectralIndices(defor2, green = 3, red = 2, nir = 1)
 plot(vi2, col=cl)
 
+#Andiamo a riclassificare l'immagine originale copNDVI
+#cbind è argomento a funzione, e cambia dei valori 
+#I pixel con valori 253, 254 e 255 (acqua) possono essere trasformati in NA(non valori) 
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+plot(copNDVI)
+
+#Richiamiamo il pacchetto rasterVis per utilizzare la funzione levelplot
+library(rasterVis)
+levelplot(copNDVI) 
+
+
+
+
 
 
 
