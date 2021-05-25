@@ -3,8 +3,8 @@
 #Carichiamo le librerie che ci serviranno 
 library(raster)
 library(RStoolbox)
-library(ggplot2)
-library(viridis)
+library(ggplot2) #per ggplot plotting
+library(viridis) #Colorare i plot di ggplot in modo automatico
 library(gridExtra)
 
 #settiamo la wd 
@@ -84,17 +84,63 @@ summary(sentpca$model)
 #Standard deviation     77.3362848 53.5145531 5.765599616      0
 #Proportion of Variance  0.6736804  0.3225753 0.003744348      0
 #Cumulative Proportion   0.6736804  0.9962557 1.000000000      1
-#La prima componente spiega il 77.3362848% della variabilità originale
+#La prima componente spiega il 67.36% della variabilità originale
 
 
+#Day2 
+#Per misurare la deviazione standard ovvero la variabilità locale all'interno di una mappa utilizziamo la funziona focal 
+sentpca$map
+#class      : RasterBrick 
+#dimensions : 794, 798, 633612, 4  (nrow, ncol, ncell, nlayers)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 798, 0, 794  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : memory
+#names      :       PC1,       PC2,       PC3,       PC4 
+#min values : -227.1124, -106.4863,  -74.6048,    0.0000 
+#max values : 133.48720, 155.87991,  51.56744,   0.00000 
 
+#L'oggetto pc1 verrà d'ora in avanti utilizzato per applicare la funzione focal 
+pc1 <- sentpca$map$PC1 
+npc15 <- focal (pc1, w=matrix(1/25, nrow=5, ncol=5), fun=sd) #Deviazione standard a 5x5 pixel
+cl <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100) # 
+plot(npc15, col=cl)
 
+#Per richiamare un pezzo di codice che abbiamo già creato utilizziamo la funzione source
+#Utilizziamo la funzione source per richiamare un codice
+source("source_ggplot.r")
 
+#Andiamo a plottare tramite ggplot i nostri dati
+#ggplot crea una finestra vuota 
+#Creare punti dentro ggplot -> geom_point
+#Creare delle linee -> geom_line
+#geom_raster -> crea la mappa 
+ggplot() +
+geom_raster(npc15, mapping = aes(x = x, y = y, fill = layer)) + #nome della mappa, inseriamo poi le estetiche, ovvero i valori  
+scale_fill_viridis() +
+ggtitle ("Standard deviation of PC1 bu viridis colour scale")
+# The package contains eight color scales: “viridis”, the primary choice, and five alternatives with similar properties - “magma”, “plasma”, “inferno”, “civids”, “mako”, and “rocket” -, and a rainbow color map - “turbo”. 
+#scale_fill_viridis lo utilizziamo per le leggende dei colori 
 
+p1 <- ggplot() +
+geom_raster(npc15, mapping = aes(x = x, y = y, fill = layer)) + #nome della mappa, inseriamo poi le estetiche, ovvero i valori  
+scale_fill_viridis() +
+ggtitle ("Standard deviation of PC1 bu viridis colour scale")
 
+#Metto un'altra leggenda di colore di viridis =magma     
+p2 <- ggplot() +
+geom_raster(npc15, mapping = aes(x = x, y = y, fill = layer)) +
+scale_fill_viridis(option = "magma")  +
+ggtitle("Standard deviation of PC1 by magma colour scale")
 
+#Metto un'altra leggenda di colore di viridis = inferno
+p3 <- ggplot() +
+geom_raster(npc15, mapping = aes(x = x, y = y, fill = layer)) +
+scale_fill_viridis(option = "inferno")  +
+ggtitle("Standard deviation of PC1 by inferno colour scale")
 
-
+#Plotto tutte le tre immagini insieme 
+grid.arrange(p1, p2, p3, nrow =1)
 
 
 
