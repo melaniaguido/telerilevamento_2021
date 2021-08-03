@@ -9,6 +9,8 @@ library(raster)
 library(RStoolbox) #Ci serve per la classificazione 
 library(ggplot2) 
 library(rasterVis) #il pacchetto rasterVis contiene metodi di visualizzazione per i dati raster 
+library(viridis) #Colorare i plot di ggplot in modo automatico
+library(gridExtra)
 
 #Importo le immagini su cui andrò a lavorare 
 nevada1 <- brick("nevada2006.jpg")
@@ -142,137 +144,64 @@ plot(d2c3$map, col=cl)
 
 #pixel di ciascuna classe 
  freq(d1c3$map)
-   value   count
-[1,]     1 5145502
-[2,]     2 4692932
-[3,]     3 9101470
+  # value   count
+#[1,]     1 6460829
+#[2,]     2 8015537
+#[3,]     3 4463538
 
-s1 <-  5145502 + 4692932 + 9101470 #Somma di tutti i pixel
+s1 <-  6460829 + 8015537 + 4463538 #Somma di tutti i pixel
 
-#Qual è la frequenza dei pixel di neve? 
 prop1 <- freq(d1c3$map)/s1 #Otteniamo così le proporzioni
- value     count
-[1,] 5.279858e-08 0.4769798    48%
-[2,] 1.055972e-07 0.2434118    24%
-[3,] 1.583957e-07 0.2796083    28%
+
+#value cont 
+#[1,] 5.279858e-08 0.3411226    34%
+#[2,] 1.055972e-07 0.4232090    42%
+#[3,] 1.583957e-07 0.2356685    24%
 
 #seconda immagine 
 freq(d2c3$map)
-     value   count
-    value   count
-[1,]     1 7723115
-[2,]     2 5318712
-[3,]     3 5898077
-s2 <- 7723115 +  5318712 + 5898077
+    #value   count
+#[1,]     1 6995286
+#[2,]     2 4763875
+#[3,]     3 7180743
+s2 <- 6995286 +  4763875 + 7180743
 prop2 <- freq(d2c3$map)/s2
 prop2
-            value     count
-[1,] 5.279858e-08 0.4077695     41%
-[2,] 1.055972e-07 0.2808204     28%
-[3,] 1.583957e-07 0.3114101     31%
+ 
+  #value     count
+#[1,] 5.279858e-08 0.3693412     37%
+#[2,] 1.055972e-07 0.2515258     25%
+#[3,] 1.583957e-07 0.3791330     38%
 
 #Andiamo a generare un dataset che in r si chiama dataframe 
-cover <- c("snow","grass", "soil") #cover è formata dalle componenti forest e snow
-percent_2006 <- c(47.69, 24.34, 27.96) 
-percent_2021 <- c(40.77, 28.08, 31.14)
+cover <- c("grass","snow", "soil") #cover è formata dalle componenti grass, snow e soil 
+percent_2006 <- c(34.11, 42.32, 23.56) 
+percent_2021 <- c(36.93, 25.15, 37.91)
 #data.frame è la funzione che mi permette di creare i dataframe in r
 percentages <- data.frame(cover, percent_2006, percent_2021) #Andiamo a definire le colonne 
 percentages
+
 #cover percent_2006 percent_2021
-1  snow        47.69        40.77
-2 grass        24.34        28.08
-3  soil        27.96        31.14
+#1 grass        34.11        36.93
+#2  snow        42.32        25.15
+#3  soil        23.56        37.91
+
 
 #Andiamo a fare il plot 
 #La funzione ggplot e plotta un dataset e poi ha una parte chiamata aestetich, scriviamo la prima e la seconda colonna  e il colore 
 #Attraverso geom_bar vado a definire la visualizzazione 
-ggplot(percentages, aes(x=cover, y=percent_2021, color=cover)) + geom_bar(stat="identity", fill="white")
-
 #Andiamo a fare il plot di tutte e due utilizzando ggplot 
 p1 <- ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
 p2 <- ggplot(percentages, aes(x=cover, y=percent_2021, color=cover)) + geom_bar(stat="identity", fill="white")
 grid.arrange(p1, p2, nrow=1) #Attraverso grid.arrange andiamo a mettere i due grafici vicini nello stessa pagina 
 
 
-#Classification 
-setwd("C:/lab/")
-library(raster)
-library(RStoolbox)
-
-#Carichiamo l'immagine 
-#L'immagine rappresenta i diversi livelli di energia del sole nella parte interessata 
-so <- brick("nevada2006.jpg") 
-
-#Facciamo il plottaggio 
-#inseriamo il nome dell'immagine,i 3 livelli e infine lo stretch
-plotRGB(so, 1,2,3, stretch="lin")
-
-#Classifichiamo l'immagine 
-#La funzione è unsuperClass (Unsupervided classification) 
-#All'interno del pacchetto Rstoolbox opera la classificazione non supervisionata
-soc <- unsuperClass(so, nClasses=3)
-#Una volta fatta la classificazione (abbiamo creato un modello di classificazione), possiamo fare il plot dell'immagine 
-plot(soc$map)
-#Utilizziamo una funzione che fa in modo che esca la stessa classificazione per tutti 
-#Per fare ciò utilizziamo la funzione set.seed
-set.seed(42)
 
 
 
 
 
-library(rasterVis)
-levelplot(TGr) 
 
-cl<-colorRampPalette(c("blue","light blue","pink", "red")) (100)
-levelplot(TGr,col.regions=cl) #col.regions è l'argomento usato da levelplot per cambiare colore 
-#Abbiamo fatto un plot con colori che abbiamo stabilito noi e possiamo vedere multitemporalmente cosa è successo nelle zone che stiamo osservando 
-
-meltlist<-list.files(pattern="nevada")
-melt_import<-lapply(meltlist,raster) #Stiamo quindi importando tutti i dati con un'unica funzione
-#Facciamo quindi il levelplot di melt 
-#Facendo lo stack raggruppo tutti i file appena importati con questa funzione 
-melt <- stack(melt_import)
-melt 
-tack 
-dimensions : 4352, 4352, 18939904, 4  (nrow, ncol, ncell, nlayers)
-resolution : 1, 1  (x, y)
-extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
-crs        : NA 
-names      : nevada2006, nevada2010, nevada2015, nevada2021 
-min values :          0,          0,          0,          0 
-max values :        255,        255,        255,        255 
-
-levelplot(melt)
-
-melt_amount <- melt$nevada2006 - melt$nevada2021
-
-library(raster)
-library(RStoolbox)
-library(ggplot2) #per ggplot plotting
-library(viridis) #Colorare i plot di ggplot in modo automatico
-library(gridExtra)
-
-nevada06 <- brick("nevada2006.jpg")
-nevada06
-
-plotRGB(nevada06) #Visualizziamo l'immagine, utilizzando la funzione plotRGB essendo la nostra immagine a tre componenti
-#Se cambiamo la posizione delle bande allora diventa 
-plotRGB(nevada06, r=2, g=1, b=3, stretch="lin")
-
-
-nevada_pca <- rasterPCA(nevada06)
-
-nir <- nevada06$nevada2006.1
-#Associamo l'immagine con la banda del red 
-red <- nevada06$nevada2006.2
-#Ora ci calcoliamo NDVI
-ndvi <- (nir-red)/(nir+red)
-#Visualizziamo l'immagine 
-plot(ndvi)
-#Cambiamo la color palette 
-cl <- colorRampPalette(c('black','white','red','magenta','green'))(100) # 
-plot(ndvi,col=cl)
 
 
 
