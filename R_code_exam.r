@@ -14,14 +14,17 @@ library(gridExtra)
 
 #Importo le immagini su cui andrò a lavorare 
 nevada1 <- brick("nevada2006.jpg")
-nevada2 <- brick ("nevada2021.jpg")
-nevada3 <- brick("nevada2010.jpg")
-nevada4 <- brick ("nevada2015.jpg")
+nevada2 <- brick("nevada2010.jpg")
+nevada3 <- brick ("nevada2015.jpg")
+nevada4 <- brick ("nevada2021.jpg")
 
-#Plottiamo le due immagini insieme utilizzando par 
-par(mfrow=c(2,1))
-plotRGB(nevada1, r=1, g=2, b=3, stretch="Lin")
-plotRGB(nevada2, r=1, g=2, b=3, stretch="Lin")
+
+#Vado a fare il plot delle immagini utilizzando ggRGB
+p1 <- ggRGB(nevada1, r=1, g=2, b=3, stretch="lin")
+p2 <- ggRGB(nevada2, r=1, g=2, b=3, stretch="lin")
+p3 <- ggRGB(nevada3, r=1, g=2, b=3, stretch="lin")
+p4 <- ggRGB(nevada4, r=1, g=2, b=3, stretch="lin")
+grid.arrange(p1, p2, p3, p4,  nrow=2) #grafici in una pagina
 
 #Time_series 
 
@@ -44,8 +47,7 @@ plot(nevada21)
 
 list.files()
 rlist <- list.files(pattern="nevada")
-rlist                       #Questo a cosa serve???
-
+rlist                       
 #lapply applica un'altra funzione ad una lista di file
 lapply(rlist, raster) #applichiamo la funzione lapply alla lista di file ottenuta(rlist), e utilizziamo la funzione raster che importa tutti i file 
 import <- lapply(rlist, raster) 
@@ -102,43 +104,40 @@ values     : 0, 255  (min, max)
 Nvd <- stack(import) #la funzione stack mi permette di avere un unico file tutto insieme che mi aiuta per esempio a fare direttamente un plot senza utilizzare la funzione par 
 plot(Nvd) 
 
-plot(Nvd)
-plotRGB(Nvd, 1, 2, 3, stretch="Lin")
-plotRGB(Nvd, 2, 3, 4, stretch="Lin")
-plotRGB(Nvd, 4, 3, 2, stretch="Lin")    #Immagine con colori particolari 
-
 #levelplot è una funzione che mi permette di usare il blocco intero di file, una singola leggenda e facciamo un plot unico 
 levelplot(Nvd) 
 
 #Cambiamo la palette dei colori 
 cl<-colorRampPalette(c("blue","light blue","pink", "red")) (100)
-levelplot(Nvd,col.regions=cl) #col.regions è l'argomento usato da levelplot per cambiare colore 
-#Abbiamo fatto un plot con colori che abbiamo stabilito noi e possiamo vedere multitemporalmente cosa è successo nelle zone che stiamo osservando 
 
+levelplot(Nvd,col.regions=cl, main= "Snowpack variation in time", names.attr=c("April2006","April2010","April2015","April2021"))
+#col.regions è l'argomento usato da levelplot per cambiare colore 
+#Abbiamo fatto un plot con colori che abbiamo stabilito noi e possiamo vedere multitemporalmente cosa è successo nelle zone che stiamo osservando 
 #Andiamo a cambiare il nome agli attributi, names.attr argomento della funzione plot per nominare i sisngoli attributi 
 #Inseriamo il titolo della nostra mappa finale attraverso "main"
-levelplot(Nvd,col.regions=cl, main= "Snowpack variation in time", names.attr=c("April2006","April2010","April2015","April2021"))
 
-
-library(gridExtra)
-#Vado a fare il plot delle due immagine utilizzando ggRGB
-p1 <- ggRGB(nevada1, r=1, g=2, b=3, stretch="lin")
-p2 <- ggRGB(nevada2, r=1, g=2, b=3, stretch="lin")
-grid.arrange(p1, p2, nrow=2) #grafici in una pagina
 
 #Classificazione non supervisionata 
+#
+
+par(mfrow=c(1,2))
+plotRGB(nevada1, 1,2,3, stretch="hist")
+plotRGB(nevada3, 1,2,3, stretch="hist")
+
+set.seed(1)
+rnorm(1)
 d1c3 <- unsuperClass(nevada1, nClasses=3)
-#Facciamo il plot 
-plot(d1c3$map)
-#Modifichiamo la palette colori 
+#Modifichiamo la palette colori e facciamo il plot 
 cl <- colorRampPalette(c('light blue','pink', 'white'))(100) 
 plot(d1c3$map, col=cl)
 
-
-d2c3 <- unsuperClass(nevada2, nClasses=3)
+#Facciamo la stessa cosa per la seconda immagine 
+set.seed(1)
+rnorm(1)
+d2c3 <- unsuperClass(nevada4, nClasses=3)
 plot(d2c3$map, col=cl)
 
-par(mfrow=c(2,1))
+par(mfrow=c(1,2))
 plot(d1c3$map, col=cl)
 plot(d2c3$map, col=cl)
 
@@ -161,22 +160,23 @@ prop1 <- freq(d1c3$map)/s1 #Otteniamo così le proporzioni
 #seconda immagine 
 freq(d2c3$map)
     #value   count
-#[1,]     1 6995286
-#[2,]     2 4763875
-#[3,]     3 7180743
-s2 <- 6995286 +  4763875 + 7180743
+#[1,]     1 7039663
+#[2,]     2 7228339
+#[3,]     3 4671902
+
+s2 <- 7039663 +  7228339 + 4671902
 prop2 <- freq(d2c3$map)/s2
 prop2
  
-  #value     count
-#[1,] 5.279858e-08 0.3693412     37%
-#[2,] 1.055972e-07 0.2515258     25%
-#[3,] 1.583957e-07 0.3791330     38%
+           #value     count
+#[1,] 5.279858e-08 0.3716842  37%
+#[2,] 1.055972e-07 0.3816460  38%
+#[3,] 1.583957e-07 0.2466698  25%
 
 #Andiamo a generare un dataset che in r si chiama dataframe 
 cover <- c("grass","snow", "soil") #cover è formata dalle componenti grass, snow e soil 
 percent_2006 <- c(34.11, 42.32, 23.56) 
-percent_2021 <- c(36.93, 25.15, 37.91)
+percent_2021 <- c(37.16, 38.16, 24.66)
 #data.frame è la funzione che mi permette di creare i dataframe in r
 percentages <- data.frame(cover, percent_2006, percent_2021) #Andiamo a definire le colonne 
 percentages
