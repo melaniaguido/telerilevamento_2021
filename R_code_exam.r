@@ -134,7 +134,7 @@ plot(d1c3$map, col=cl)
 #Facciamo la stessa cosa per la seconda immagine 
 set.seed(1)
 rnorm(1)
-d2c3 <- unsuperClass(nevada4, nClasses=3)
+d2c3 <- unsuperClass(nevada3, nClasses=3)
 plot(d2c3$map, col=cl)
 
 par(mfrow=c(1,2))
@@ -160,31 +160,31 @@ prop1 <- freq(d1c3$map)/s1 #Otteniamo così le proporzioni
 #seconda immagine 
 freq(d2c3$map)
     #value   count
-#[1,]     1 7039663
-#[2,]     2 7228339
-#[3,]     3 4671902
+#[1,]     1 7813028
+#[2,]     2 5366960
+#[3,]     3 5759916
 
-s2 <- 7039663 +  7228339 + 4671902
+s2 <- 7813028 +  5366960 + 5759916
 prop2 <- freq(d2c3$map)/s2
 prop2
  
-           #value     count
-#[1,] 5.279858e-08 0.3716842  37%
-#[2,] 1.055972e-07 0.3816460  38%
-#[3,] 1.583957e-07 0.2466698  25%
+          #value     count
+#[1,] 5.279858e-08 0.4125168   41%
+#[2,] 1.055972e-07 0.2833679   28%
+#[3,] 1.583957e-07 0.3041154   31%
 
 #Andiamo a generare un dataset che in r si chiama dataframe 
 cover <- c("grass","snow", "soil") #cover è formata dalle componenti grass, snow e soil 
 percent_2006 <- c(34.11, 42.32, 23.56) 
-percent_2021 <- c(37.16, 38.16, 24.66)
+percent_2015 <- c(41.25, 28.33, 30.41)
 #data.frame è la funzione che mi permette di creare i dataframe in r
-percentages <- data.frame(cover, percent_2006, percent_2021) #Andiamo a definire le colonne 
+percentages <- data.frame(cover, percent_2006, percent_2015) #Andiamo a definire le colonne 
 percentages
 
-#cover percent_2006 percent_2021
-#1 grass        34.11        36.93
-#2  snow        42.32        25.15
-#3  soil        23.56        37.91
+  #cover percent_2006 percent_2015
+#1 grass        34.11        41.25
+#2  snow        42.32        28.33
+#3  soil        23.56        30.41
 
 
 #Andiamo a fare il plot 
@@ -192,8 +192,9 @@ percentages
 #Attraverso geom_bar vado a definire la visualizzazione 
 #Andiamo a fare il plot di tutte e due utilizzando ggplot 
 p1 <- ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
-p2 <- ggplot(percentages, aes(x=cover, y=percent_2021, color=cover)) + geom_bar(stat="identity", fill="white")
-grid.arrange(p1, p2, nrow=1) #Attraverso grid.arrange andiamo a mettere i due grafici vicini nello stessa pagina 
+p2 <- ggplot(percentages, aes(x=cover, y=percent_2015, color=cover)) + geom_bar(stat="identity", fill="white")
+grid.arrange(p1, p2, nrow=1) 
+#Attraverso grid.arrange andiamo a mettere i due grafici vicini nello stessa pagina 
 
 
 
