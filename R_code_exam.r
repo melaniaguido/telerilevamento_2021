@@ -200,14 +200,41 @@ grid.arrange(p1, p2, nrow=1)
 
 
 
+#prova analisi multivariata 
+nevada2006 <-brick("nevada2006.jpg")
+nevada2006
+#class      : RasterBrick 
+#dimensions : 4352, 4352, 18939904, 3  (nrow, ncol, ncell, nlayers)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : C:/lab/nevada2006.jpg 
+#names      : nevada2006.1, nevada2006.2, nevada2006.3 
+#min values :            0,            0,            0 
+#max values :          255,          255,          255 
+
+plot(nevada2006)
 
 
+plot(nevada2006$nevada2006.1, nevada2006$nevada2006.3, col="red", pch=25, cex=2)
+pairs(nevada2006)
 
+nevada2006ricampionata <- aggregate(nevada2006, fact=10)
+par(mfrow=c(2,1))
+plotRGB(nevada2006, r=4, g=3, b=2, stretch="lin")
+plotRGB(nevada2006ricampionata, r=4, g=3, b=2, stretch="lin")
 
+nevada2006ricampionata_pca <- rasterPCA(nevada2006ricampionata)
 
+summary(nevada2006ricampionata_pca$model)
+#Importance of components:
+                           # Comp.1     Comp.2      Comp.3
+#Standard deviation     106.5709812 15.0940474 4.559377958
+#Proportion of Variance   0.9785785  0.0196304 0.001791137
+#Cumulative Proportion    0.9785785  0.9982089 1.000000000
 
-
-
+plot(nevada2006ricampionata_pca$map)
+plotRGB(nevada2006ricampionata_pca$map, r=1, g=2, b=3, stretch="lin")
 
 
 
