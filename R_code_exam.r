@@ -12,7 +12,8 @@ library(rasterVis) #il pacchetto rasterVis contiene metodi di visualizzazione pe
 library(viridis) #Colorare i plot di ggplot in modo automatico
 library(gridExtra)
 
-#Importo le immagini su cui andrò a lavorare 
+#Importo le immagini su cui andrò a lavorare utilizzando la funzione brick che mi permette di importare un oggetto raster multistrato 
+#Associamo ad ogni immagine importata tramite brick ad un nome
 nevada1 <- brick("nevada2006.jpg")
 nevada2 <- brick("nevada2010.jpg")
 nevada3 <- brick ("nevada2015.jpg")
@@ -20,87 +21,94 @@ nevada4 <- brick ("nevada2021.jpg")
 
 
 #Vado a fare il plot delle immagini utilizzando ggRGB
+#Abbiamo un'immagine con 3 bande, e possiamo creare un'immagine singola delle 3 bande usando ggRGB, quindi partendo da tre bande dell'immagine satellitare, possiamo unirle per creare un immagine a banda singola
+#Per fare il plot abbiamo bisogno dell'immagine da plottare, delle 3 componenti RGB 
 p1 <- ggRGB(nevada1, r=1, g=2, b=3, stretch="lin")
 p2 <- ggRGB(nevada2, r=1, g=2, b=3, stretch="lin")
 p3 <- ggRGB(nevada3, r=1, g=2, b=3, stretch="lin")
 p4 <- ggRGB(nevada4, r=1, g=2, b=3, stretch="lin")
-grid.arrange(p1, p2, p3, p4,  nrow=2) #grafici in una pagina
+grid.arrange(p1, p2, p3, p4,  nrow=2)  #Attraverso grid.arrange andiamo a mettere i due grafici vicini nello stessa pagina 
 
 #Time_series 
-
+#
+#Utilizziamo la funzione raster:create a rasterlayer object
 nevada06 <- raster("nevada2006.jpg")
 plot(nevada06)
 nevada21 <- raster("nevada2021.jpg")
 plot(nevada21)
-
-#Maggiore è il valore del digital number maggiore sarà il valore della temperatura in queste immagini 
 nevada10 <- raster("nevada2010.jpg")
 plot(nevada10)
 nevada15 <- raster("nevada2015.jpg")
 plot(nevada15)
 
+#Faccio il plot delle immagini e utilizzo la funzione par che serve per mettere tutte le immagini in una stessa finestra, e sistemarle come preferisco
 par(mfrow=c(2,2))
 plot(nevada06)
 plot(nevada10)
 plot(nevada15)
 plot(nevada21)
 
-list.files()
+#voglio importare i file tutti insieme invece di usare raster e importarli uno per volta, uso quindi lapply
+#lapply: applicare la funzione raster a una lista di file (rlist)
+#la list.files: crea la lista che R utilizzerà per applicare la funzione lapply
+#con pattern ricerchiamo i file che ci servono in base alle caratteristiche comuni nel nome
 rlist <- list.files(pattern="nevada")
-rlist                       
-#lapply applica un'altra funzione ad una lista di file
-lapply(rlist, raster) #applichiamo la funzione lapply alla lista di file ottenuta(rlist), e utilizziamo la funzione raster che importa tutti i file 
+rlist            
+#[1] "nevada2006.jpg" "nevada2010.jpg" "nevada2015.jpg" "nevada2021.jpg"
+#applichiamo la funzione lapply alla lista di file ottenuta(rlist), e utilizziamo la funzione raster che importa tutti i file 
 import <- lapply(rlist, raster) 
 import
 
-[[1]]
-class      : RasterLayer 
-band       : 1  (of  3  bands)
-dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
-resolution : 1, 1  (x, y)
-extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
-crs        : NA 
-source     : C:/lab/nevada2006.jpg 
-names      : nevada2006 
-values     : 0, 255  (min, max)
+#[[1]]
+#class      : RasterLayer 
+#band       : 1  (of  3  bands)
+#dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : C:/lab/nevada2006.jpg 
+#names      : nevada2006 
+#values     : 0, 255  (min, max)
 
 
-[[2]]
-class      : RasterLayer 
-band       : 1  (of  3  bands)
-dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
-resolution : 1, 1  (x, y)
-extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
-crs        : NA 
-source     : C:/lab/nevada2010.jpg 
-names      : nevada2010 
-values     : 0, 255  (min, max)
+#[[2]]
+#class      : RasterLayer 
+#band       : 1  (of  3  bands)
+#dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : C:/lab/nevada2010.jpg 
+#names      : nevada2010 
+#values     : 0, 255  (min, max)
 
 
-[[3]]
-class      : RasterLayer 
-band       : 1  (of  3  bands)
-dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
-resolution : 1, 1  (x, y)
-extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
-crs        : NA 
-source     : C:/lab/nevada2015.jpg 
-names      : nevada2015 
-values     : 0, 255  (min, max)
+#[[3]]
+#class      : RasterLayer 
+#band       : 1  (of  3  bands)
+#dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : C:/lab/nevada2015.jpg 
+#names      : nevada2015 
+#values     : 0, 255  (min, max)
 
 
-[[4]]
-class      : RasterLayer 
-band       : 1  (of  3  bands)
-dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
-resolution : 1, 1  (x, y)
-extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
-crs        : NA 
-source     : C:/lab/nevada2021.jpg 
-names      : nevada2021 
-values     : 0, 255  (min, max)
+#[[4]]
+#class      : RasterLayer 
+#band       : 1  (of  3  bands)
+#dimensions : 4352, 4352, 18939904  (nrow, ncol, ncell)
+#resolution : 1, 1  (x, y)
+#extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
+#crs        : NA 
+#source     : C:/lab/nevada2021.jpg 
+#names      : nevada2021 
+#values     : 0, 255  (min, max)
 
 #Vado ad unire tutti i file importati in un unico file 
+#Possiamo creare un unico pacchetto di file con tutti quelli importati, lo facciamo con la funzione stack
+#stack function: abbiamo una lista di file raster e li mettiamo tutti insieme
 Nvd <- stack(import) #la funzione stack mi permette di avere un unico file tutto insieme che mi aiuta per esempio a fare direttamente un plot senza utilizzare la funzione par 
 plot(Nvd) 
 
@@ -108,7 +116,7 @@ plot(Nvd)
 levelplot(Nvd) 
 
 #Cambiamo la palette dei colori 
-cl<-colorRampPalette(c("blue","light blue","pink", "red")) (100)
+cl<-colorRampPalette(c("blue","yellow","green", "red")) (100)
 
 levelplot(Nvd,col.regions=cl, main= "Snowpack variation in time", names.attr=c("April2006","April2010","April2015","April2021"))
 #col.regions è l'argomento usato da levelplot per cambiare colore 
@@ -117,14 +125,18 @@ levelplot(Nvd,col.regions=cl, main= "Snowpack variation in time", names.attr=c("
 #Inseriamo il titolo della nostra mappa finale attraverso "main"
 
 
-#Classificazione non supervisionata 
-#
-
+#Land cover 
+#analisi multitemporale di variazione della land cover
 par(mfrow=c(1,2))
 plotRGB(nevada1, 1,2,3, stretch="hist")
 plotRGB(nevada3, 1,2,3, stretch="hist")
+#Per l'analisi della land cover utilizzo solo l'immagine nevada1 e nevada3 
 
-set.seed(1)
+#Classifichiamo l'immagine
+#La funzione è unsuperClass (Unsupervided classification) 
+#All'interno del pacchetto Rstoolbox opera la classificazione non supervisionata
+#Serve per la classificazione dei pixel in classi 
+set.seed(1) #Attrraverso queste funzioni blocco le classi in modo che in tutte e due le immagini avrò le stesse classi associate agli stessi colori 
 rnorm(1)
 d1c3 <- unsuperClass(nevada1, nClasses=3)
 #Modifichiamo la palette colori e facciamo il plot 
@@ -137,11 +149,14 @@ rnorm(1)
 d2c3 <- unsuperClass(nevada3, nClasses=3)
 plot(d2c3$map, col=cl)
 
+#Vado a fare il plot delle immagini appena classificate 
 par(mfrow=c(1,2))
 plot(d1c3$map, col=cl)
 plot(d2c3$map, col=cl)
 
-#pixel di ciascuna classe 
+
+#Andiamo a calcolare i pixel di ciascuna classe 
+#nevada1
  freq(d1c3$map)
   # value   count
 #[1,]     1 6460829
@@ -151,13 +166,14 @@ plot(d2c3$map, col=cl)
 s1 <-  6460829 + 8015537 + 4463538 #Somma di tutti i pixel
 
 prop1 <- freq(d1c3$map)/s1 #Otteniamo così le proporzioni
-
+prop1
 #value cont 
 #[1,] 5.279858e-08 0.3411226    34%
 #[2,] 1.055972e-07 0.4232090    42%
 #[3,] 1.583957e-07 0.2356685    24%
 
-#seconda immagine 
+#Andiamo a fare la stessa cosa per la seconda immagine
+#nevada3 
 freq(d2c3$map)
     #value   count
 #[1,]     1 7813028
@@ -198,43 +214,6 @@ grid.arrange(p1, p2, nrow=1)
 
 
 
-
-
-#prova analisi multivariata 
-nevada2006 <-brick("nevada2006.jpg")
-nevada2006
-#class      : RasterBrick 
-#dimensions : 4352, 4352, 18939904, 3  (nrow, ncol, ncell, nlayers)
-#resolution : 1, 1  (x, y)
-#extent     : 0, 4352, 0, 4352  (xmin, xmax, ymin, ymax)
-#crs        : NA 
-#source     : C:/lab/nevada2006.jpg 
-#names      : nevada2006.1, nevada2006.2, nevada2006.3 
-#min values :            0,            0,            0 
-#max values :          255,          255,          255 
-
-plot(nevada2006)
-
-
-plot(nevada2006$nevada2006.1, nevada2006$nevada2006.3, col="red", pch=25, cex=2)
-pairs(nevada2006)
-
-nevada2006ricampionata <- aggregate(nevada2006, fact=10)
-par(mfrow=c(2,1))
-plotRGB(nevada2006, r=4, g=3, b=2, stretch="lin")
-plotRGB(nevada2006ricampionata, r=4, g=3, b=2, stretch="lin")
-
-nevada2006ricampionata_pca <- rasterPCA(nevada2006ricampionata)
-
-summary(nevada2006ricampionata_pca$model)
-#Importance of components:
-                           # Comp.1     Comp.2      Comp.3
-#Standard deviation     106.5709812 15.0940474 4.559377958
-#Proportion of Variance   0.9785785  0.0196304 0.001791137
-#Cumulative Proportion    0.9785785  0.9982089 1.000000000
-
-plot(nevada2006ricampionata_pca$map)
-plotRGB(nevada2006ricampionata_pca$map, r=1, g=2, b=3, stretch="lin")
 
 
 
