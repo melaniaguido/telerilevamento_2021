@@ -203,10 +203,9 @@ percentages
 #3  soil        23.56        30.41
 
 
-#Andiamo a fare il plot 
-#La funzione ggplot e plotta un dataset e poi ha una parte chiamata aestetich, scriviamo la prima e la seconda colonna  e il colore 
-#Attraverso geom_bar vado a definire la visualizzazione 
 #Andiamo a fare il plot di tutte e due utilizzando ggplot 
+#La funzione ggplot plotta un dataset e poi ha una parte chiamata aestetich, scriviamo la prima e la seconda colonna  e il colore 
+#Attraverso geom_bar vado a definire la visualizzazione 
 p1 <- ggplot(percentages, aes(x=cover, y=percent_2006, color=cover)) + geom_bar(stat="identity", fill="white")
 p2 <- ggplot(percentages, aes(x=cover, y=percent_2015, color=cover)) + geom_bar(stat="identity", fill="white")
 grid.arrange(p1, p2, nrow=1) 
