@@ -49,7 +49,7 @@ plot(nevada15)
 plot(nevada21)
 
 #voglio importare i file tutti insieme invece di usare raster e importarli uno per volta, uso quindi lapply
-#lapply: applicare la funzione raster a una lista di file (rlist)
+#lapply: applicare una funzione ad una lista di file (rlist)
 #la list.files: crea la lista che R utilizzerà per applicare la funzione lapply
 #con pattern ricerchiamo i file che ci servono in base alle caratteristiche comuni nel nome
 rlist <- list.files(pattern="nevada")
