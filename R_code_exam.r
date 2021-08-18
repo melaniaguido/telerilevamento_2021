@@ -5,12 +5,12 @@
 setwd("C:/lab/")
 
 #Importo le librerie che mi serviranno 
-library(raster)
+library(raster) #questo è per spiegare a R che vogliamo usare il pacchetto raster 
 library(RStoolbox) #Ci serve per la classificazione 
-library(ggplot2) 
+library(ggplot2) #Serve per creare i grafici 
 library(rasterVis) #il pacchetto rasterVis contiene metodi di visualizzazione per i dati raster 
 library(viridis) #Colorare i plot di ggplot in modo automatico
-library(gridExtra)
+
 
 #Importo le immagini su cui andrò a lavorare utilizzando la funzione brick che mi permette di importare un oggetto raster multistrato 
 #Associamo ad ogni immagine importata tramite brick ad un nome
@@ -30,7 +30,7 @@ p4 <- ggRGB(nevada4, r=1, g=2, b=3, stretch="lin")
 grid.arrange(p1, p2, p3, p4,  nrow=2)  #Attraverso grid.arrange andiamo a mettere i due grafici vicini nello stessa pagina 
 
 #Time_series 
-#
+#Analizziamo l'immagine nel tempo, in modo da vedere come questa varia negli anni
 #Utilizziamo la funzione raster:create a rasterlayer object
 nevada06 <- raster("nevada2006.jpg")
 plot(nevada06)
@@ -48,6 +48,7 @@ plot(nevada10)
 plot(nevada15)
 plot(nevada21)
 
+# per evitare di importare singolarmente i files, creo una lista dei files di interesse e li associo ad un oggetto (rlist) per facilitare le funzioni successive 
 #voglio importare i file tutti insieme invece di usare raster e importarli uno per volta, uso quindi lapply
 #lapply: applicare una funzione ad una lista di file (rlist)
 #la list.files: crea la lista che R utilizzerà per applicare la funzione lapply
@@ -112,12 +113,10 @@ import
 Nvd <- stack(import) #la funzione stack mi permette di avere un unico file tutto insieme che mi aiuta per esempio a fare direttamente un plot senza utilizzare la funzione par 
 plot(Nvd) 
 
-#levelplot è una funzione che mi permette di usare il blocco intero di file, una singola leggenda e facciamo un plot unico 
-levelplot(Nvd) 
-
 #Cambiamo la palette dei colori 
 cl<-colorRampPalette(c("blue","yellow","green", "red")) (100)
 
+#levelplot è una funzione che mi permette di usare il blocco intero di file, una singola leggenda e facciamo un plot unico
 levelplot(Nvd,col.regions=cl, main= "Snowpack variation in time", names.attr=c("April2006","April2010","April2015","April2021"))
 #col.regions è l'argomento usato da levelplot per cambiare colore 
 #Abbiamo fatto un plot con colori che abbiamo stabilito noi e possiamo vedere multitemporalmente cosa è successo nelle zone che stiamo osservando 
@@ -136,6 +135,7 @@ plotRGB(nevada3, 1,2,3, stretch="hist")
 #La funzione è unsuperClass (Unsupervided classification) 
 #All'interno del pacchetto Rstoolbox opera la classificazione non supervisionata
 #Serve per la classificazione dei pixel in classi 
+#unsuperClass mi permette di discriminare i pixel delle immagini dividendoli in classi in base alla riflettanza
 set.seed(1) #Attrraverso queste funzioni blocco le classi in modo che in tutte e due le immagini avrò le stesse classi associate agli stessi colori 
 rnorm(1)
 d1c3 <- unsuperClass(nevada1, nClasses=3)
@@ -155,7 +155,7 @@ plot(d1c3$map, col=cl)
 plot(d2c3$map, col=cl)
 
 
-#Andiamo a calcolare i pixel di ciascuna classe 
+##calcoliamo ora la frequenza dei pixel di una certa classe nelle mappe generate
 #nevada1
  freq(d1c3$map)
   # value   count
